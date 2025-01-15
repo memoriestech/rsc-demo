@@ -8,9 +8,21 @@ importers:
 
   .:
     dependencies:
+      '@biomejs/biome':
+        specifier: ^1.9.4
+        version: 1.9.4
+      '@types/node':
+        specifier: ^20
+        version: 20.17.13
       '@types/pg':
         specifier: ^8.11.10
         version: 8.11.10
+      '@types/react':
+        specifier: ^19
+        version: 19.0.7
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.0.3(@types/react@19.0.7)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -32,43 +44,30 @@ importers:
       pg:
         specifier: ^8.13.1
         version: 8.13.1
+      postcss:
+        specifier: ^8
+        version: 8.5.1
       react:
         specifier: ^19.0.0
         version: 19.0.0
       react-dom:
         specifier: ^19.0.0
         version: 19.0.0(react@19.0.0)
+      shadcn:
+        specifier: ^2.1.8
+        version: 2.1.8(typescript@5.7.3)
       sst:
         specifier: 3.5.13
         version: 3.5.13
       tailwind-merge:
         specifier: ^2.6.0
         version: 2.6.0
-      tailwindcss-animate:
-        specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@3.4.17)
-    devDependencies:
-      '@biomejs/biome':
-        specifier: ^1.9.4
-        version: 1.9.4
-      '@types/node':
-        specifier: ^20
-        version: 20.17.13
-      '@types/react':
-        specifier: ^19
-        version: 19.0.7
-      '@types/react-dom':
-        specifier: ^19
-        version: 19.0.3(@types/react@19.0.7)
-      postcss:
-        specifier: ^8
-        version: 8.5.1
-      shadcn:
-        specifier: ^2.1.8
-        version: 2.1.8(typescript@5.7.3)
       tailwindcss:
         specifier: ^3.4.1
         version: 3.4.17
+      tailwindcss-animate:
+        specifier: ^1.0.7
+        version: 1.0.7(tailwindcss@3.4.17)
       typescript:
         specifier: ^5
         version: 5.7.3
