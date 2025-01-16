@@ -1,4 +1,6 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { auth, login, logout } from "./actions";
 
 // Mock data for movies
 const movies = [
@@ -14,10 +16,23 @@ const movies = [
   { id: 5, title: "Forrest Gump", year: 1994 },
 ];
 
-export default function MovieList() {
+export default async function MovieList() {
+  const subject = await auth();
+
+  if (!subject) {
+    return login();
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">My Movies</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">My Movies</h1>
+
+        <form action={logout}>
+          <Button>Logout</Button>
+        </form>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
         {movies.map((movie) => (
           <div key={movie.id} className="bg-white rounded-lg shadow-md overflow-hidden">
