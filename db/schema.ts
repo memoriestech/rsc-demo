@@ -12,6 +12,7 @@ import {
 
 export const movie = pgTable("movie", {
   id: serial("id").primaryKey(),
+  tmdbId: integer("tmdb_id").notNull().unique(),
   title: text("title").notNull(),
   description: text("description"),
   release: date("release"),
@@ -47,3 +48,6 @@ export const favorite = pgTable(
   },
   (table) => [uniqueIndex("user_movie_unique").on(table.userId, table.movieId)],
 );
+
+export type MovieInput = typeof movie.$inferInsert;
+export type Movie = typeof movie.$inferSelect;

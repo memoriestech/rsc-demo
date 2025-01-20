@@ -1,6 +1,6 @@
 import { subjects } from "@/auth/subjects";
 import { db } from "@/db";
-import { favorite, movie, user } from "@/db/schema";
+import { user } from "@/db/schema";
 import { log } from "@/lib/logger";
 import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 import { issuer } from "@openauthjs/openauth";
@@ -26,7 +26,10 @@ const app = issuer({
     if (value.provider === "password") {
       const user = await getUser(value.email);
 
-      return ctx.subject("user", { ...user, id: user.id.toString() });
+      return ctx.subject("user", {
+        id: user.id.toString(),
+        email: user.email,
+      });
     }
 
     throw new Error("Invalid provider");
@@ -71,12 +74,4 @@ async function sendCode(email: string, code: string) {
       },
     }),
   );
-}
-
-async function getUserFavoriteMovies(userId: number) {
-  return db
-    .select()
-    .from(favorite)
-    .where(eq(favorite.userId, userId))
-    .innerJoin(movie, eq(favorite.movieId, movie.id));
 }

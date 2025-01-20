@@ -1,6 +1,6 @@
 {
-  "id": "2c62d9a1-cd7e-481b-99c2-ac1f549d1162",
-  "prevId": "47e1394b-2bc8-42a4-8179-a44ac1af52fd",
+  "id": "b1d4cc9f-2f06-4239-aa95-31b315828b4d",
+  "prevId": "2c62d9a1-cd7e-481b-99c2-ac1f549d1162",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -62,8 +62,12 @@
           "name": "favorite_user_id_user_id_fk",
           "tableFrom": "favorite",
           "tableTo": "user",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -71,8 +75,12 @@
           "name": "favorite_movie_id_movie_id_fk",
           "tableFrom": "favorite",
           "tableTo": "movie",
-          "columnsFrom": ["movie_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "movie_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -91,6 +99,12 @@
           "name": "id",
           "type": "serial",
           "primaryKey": true,
+          "notNull": true
+        },
+        "tmdb_id": {
+          "name": "tmdb_id",
+          "type": "integer",
+          "primaryKey": false,
           "notNull": true
         },
         "title": {

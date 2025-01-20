@@ -22,6 +22,10 @@ declare module "sst" {
       "type": "sst.aws.Postgres"
       "username": string
     }
+    "TMDB_API_KEY": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
     "Vpc": {
       "bastion": string
       "type": "sst.aws.Vpc"

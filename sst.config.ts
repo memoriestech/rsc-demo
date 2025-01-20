@@ -10,6 +10,8 @@ export default $config({
     };
   },
   async run() {
+    const tmdbApiKey = new sst.Secret("TMDB_API_KEY");
+
     const vpc = new sst.aws.Vpc("Vpc", { bastion: true, nat: "ec2" });
 
     const rds = new sst.aws.Postgres("Postgres", { vpc, proxy: true });
@@ -33,7 +35,7 @@ export default $config({
     });
 
     new sst.aws.Nextjs("Web", {
-      link: [rds, auth],
+      link: [rds, auth, tmdbApiKey],
     });
   },
 });
