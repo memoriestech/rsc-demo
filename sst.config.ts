@@ -23,19 +23,29 @@ export default $config({
       },
     });
 
-    const email = new sst.aws.Email("Email", {
-      sender: "subash.adhikari@memories.net",
-    });
+    const email = getEmail();
 
     const auth = new sst.aws.Auth("Auth", {
       issuer: {
         handler: "auth/index.handler",
         link: [email, rds],
+        vpc,
       },
     });
 
     new sst.aws.Nextjs("Web", {
       link: [rds, auth, tmdbApiKey],
+      vpc,
     });
   },
 });
+
+function getEmail() {
+  if ($app.stage === "prod") {
+    return sst.aws.Email.get("Email", "subash.adhikari@memories.net");
+  }
+
+  return new sst.aws.Email("Email", {
+    sender: "subash.adhikari@memories.net",
+  });
+}

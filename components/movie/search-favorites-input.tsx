@@ -1,22 +1,26 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 
 export function SearchFavoriteInput() {
   const router = useRouter();
+  const params = useSearchParams();
   const [text, setText] = useState("");
   const [query] = useDebounce(text, 500);
 
+  const newParams = new URLSearchParams(params);
+
   useEffect(() => {
     if (!query) {
-      router.push("/");
+      newParams.delete("search");
+      router.push(`/?${newParams.toString()}`);
     } else {
       router.push(`/?search=${encodeURI(query)}`);
     }
-  }, [query, router.push]);
+  }, [query, router.push, newParams.toString, newParams.delete]);
 
   return (
     <div>

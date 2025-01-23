@@ -1,10 +1,13 @@
+import { auth } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import type { Metadata } from "next";
+import { ThemeProvider } from "next-themes";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
-import { logout } from "./actions";
+import { login, logout } from "./actions";
 import "./globals.css";
+import { ThemeToggle } from "./theme-toggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,26 +31,44 @@ export default function RootLayout({
   modal: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {modal}
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex justify-between items-center mb-6">
-            <Button asChild>
-              <Link href="/add-movie">
-                <PlusIcon className="w-6 h-6" />
-                Add Movie
-              </Link>
-            </Button>
+        <ThemeProvider attribute="class" defaultTheme="dark">
+          {modal}
+          <div className="container mx-auto px-4 py-8">
+            <div className="flex justify-between items-center mb-6">
+              <Button asChild>
+                <Link href="/add-movie">
+                  <PlusIcon className="w-6 h-6" />
+                  Add Movie
+                </Link>
+              </Button>
 
-            <form action={logout}>
-              <Button variant="link">Logout</Button>
-            </form>
+              <div className="flex items-center gap-4">
+                <ThemeToggle />
+                <LogoutButton />
+              </div>
+            </div>
+
+            {children}
           </div>
-
-          {children}
-        </div>
+        </ThemeProvider>
       </body>
     </html>
+  );
+}
+
+async function LogoutButton() {
+  const subject = await auth();
+
+  if (!subject) {
+    await login();
+    return null;
+  }
+
+  return (
+    <form action={logout}>
+      <Button variant="link">Logout</Button>
+    </form>
   );
 }

@@ -1,4 +1,4 @@
-import { auth, login } from "@/app/actions";
+import { auth } from "@/app/actions";
 import { ImdbImage } from "@/components/movie/imdb-image";
 import { SearchFavoriteInput } from "@/components/movie/search-favorites-input";
 import { Button } from "@/components/ui/button";
@@ -10,30 +10,55 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 import { countFavoriteMovies, getFavoriteMovies, removeFavoriteMovie } from "@/db/movie";
 import { Trash2 } from "lucide-react";
 import { revalidatePath } from "next/cache";
+import { Suspense } from "react";
 
 export default async function HomePage({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const subject = await auth();
-
-  if (!subject) {
-    return login();
-  }
-
-  const userId = Number.parseInt(subject.properties.id);
   const sparams = await searchParams;
 
   const page = typeof sparams.page === "string" ? Number.parseInt(sparams.page) : 1;
   const limit = typeof sparams.limit === "string" ? Number.parseInt(sparams.limit) : 10;
   const search = typeof sparams.search === "string" ? sparams.search : undefined;
 
-  const movies = await getFavoriteMovies(userId, { page, limit, search });
-  const total = await countFavoriteMovies(userId, { search });
+  return (
+    <main>
+      <SearchFavoriteInput />
+
+      <Suspense fallback={<MovieListSkeleton />}>
+        <MovieList page={page} limit={limit} search={search} />
+      </Suspense>
+    </main>
+  );
+}
+
+async function MovieList({
+  limit,
+  search,
+  page,
+}: {
+  page: number;
+  limit: number;
+  search?: string;
+}) {
+  const subject = await auth();
+
+  if (!subject) {
+    return null;
+  }
+
+  const userId = Number.parseInt(subject.properties.id);
+
+  const [movies, total] = await Promise.all([
+    getFavoriteMovies(userId, { page, limit, search }),
+    countFavoriteMovies(userId, { search }),
+  ]);
 
   const lastPage = Math.ceil(total / limit);
 
@@ -42,9 +67,7 @@ export default async function HomePage({
   }
 
   return (
-    <main>
-      <SearchFavoriteInput />
-
+    <>
       <p className="mt-4 mb-2 text-sm text-muted-foreground">
         {total} {search ? "" : "favorite"} movies {search ? "found" : ""}
       </p>
@@ -109,6 +132,41 @@ export default async function HomePage({
           </PaginationContent>
         </Pagination>
       )}
-    </main>
+    </>
+  );
+}
+
+function MovieListSkeleton() {
+  return (
+    <>
+      <div className="mt-4 mb-2 text-sm text-muted-foreground">
+        <Skeleton className="h-2 w-[200px]" />
+      </div>
+
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+        <MovieCardSkeleton />
+        <MovieCardSkeleton />
+        <MovieCardSkeleton />
+        <MovieCardSkeleton />
+        <MovieCardSkeleton />
+
+        <MovieCardSkeleton />
+        <MovieCardSkeleton />
+        <MovieCardSkeleton />
+        <MovieCardSkeleton />
+        <MovieCardSkeleton />
+      </ul>
+    </>
+  );
+}
+
+function MovieCardSkeleton() {
+  return (
+    <li>
+      <Skeleton className="w-full h-[270px] rounded-lg shadow-md" />
+
+      <Skeleton className="mb-2 mt-2 w-full h-4" />
+      <Skeleton className="w-16 h-2" />
+    </li>
   );
 }
