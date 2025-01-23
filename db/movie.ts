@@ -1,7 +1,7 @@
 "use server";
 import { db } from "@/db";
 import { favorite, movie } from "@/db/schema";
-import { and, eq, sql } from "drizzle-orm";
+import { and, count, eq, ilike, sql } from "drizzle-orm";
 
 type Movie = typeof movie.$inferInsert;
 
@@ -28,13 +28,45 @@ export async function removeFavoriteMovie(userId: number, movieId: number) {
     .returning();
 }
 
-export async function getFavoriteMovies(userId: number) {
-  const result = await db
+export async function getFavoriteMovies(
+  userId: number,
+  filter?: { page?: number; limit?: number; search?: string },
+) {
+  const query = db
     .select()
     .from(favorite)
-    .where(eq(favorite.userId, userId))
     .innerJoin(movie, eq(favorite.movieId, movie.id))
-    .orderBy(sql`${movie.id} desc`);
+    .where(
+      and(
+        eq(favorite.userId, userId),
+        filter?.search ? ilike(movie.title, `%${filter.search}%`) : undefined,
+      ),
+    );
+
+  if (filter?.page && filter.limit) {
+    query.offset((filter.page - 1) * filter.limit);
+  }
+
+  if (filter?.limit) {
+    query.limit(filter.limit);
+  }
+
+  const result = await query.orderBy(sql`${movie.release} desc`);
 
   return result.map((m) => m.movie);
+}
+
+export async function countFavoriteMovies(userId: number, filter?: { search?: string }) {
+  const result = await db
+    .select({ count: count() })
+    .from(favorite)
+    .innerJoin(movie, eq(favorite.movieId, movie.id))
+    .where(
+      and(
+        eq(favorite.userId, userId),
+        filter?.search ? ilike(movie.title, `%${filter.search}%`) : undefined,
+      ),
+    );
+
+  return result[0].count;
 }

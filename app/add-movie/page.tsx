@@ -10,7 +10,10 @@ export default async function AddMoviePage({ searchParams }: PageProps) {
 
   return (
     <main>
-      <SearchMovieInput />
+      <div className="mb-4">
+        <SearchMovieInput />
+      </div>
+
       <AddMovie query={typeof query === "string" ? query : undefined} />
     </main>
   );

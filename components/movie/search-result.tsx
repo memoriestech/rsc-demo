@@ -77,6 +77,7 @@ export function SearchResult({ movies, userId, favorites }: Props) {
                   }}
                 >
                   <Button variant="ghost" size="icon">
+                    <span className="sr-only">Favorite</span>
                     <HeartIcon
                       className={cn("h-4 w-4", { "fill-rose-400 stroke-rose-400": m.favorite })}
                     />

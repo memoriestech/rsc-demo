@@ -1,5 +1,5 @@
 import { auth } from "@/app/actions";
-import { SearchResult } from "@/components/movie/serch-result";
+import { SearchResult } from "@/components/movie/search-result";
 import { getFavoriteMovies } from "@/db/movie";
 import { searchMoviesByTitle } from "@/lib/tmdb";
 
@@ -21,5 +21,12 @@ export async function AddMovie({ query }: { query?: string }) {
     return <p className="mt-4 text-muted-foreground">No movies found</p>;
   }
 
-  return <SearchResult movies={movies} favorites={favorites} userId={userId} />;
+  return (
+    <>
+      {query && (
+        <p className="my-2 text-sm text-muted-foreground">Total {movies.length} movies found</p>
+      )}
+      <SearchResult movies={movies} favorites={favorites} userId={userId} />
+    </>
+  );
 }

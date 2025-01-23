@@ -13,7 +13,7 @@ export default async function AddMovieModalPage({ searchParams }: PageProps) {
     <Modal title="Add Movie to your list">
       <SearchMovieInput />
 
-      <div className="mt-4 max-h-[500px] overflow-y-auto">
+      <div className="max-h-[500px] overflow-y-auto">
         <AddMovie query={typeof query === "string" ? query : undefined} />
       </div>
     </Modal>

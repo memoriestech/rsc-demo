@@ -5,16 +5,16 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 
-export function SearchMovieInput() {
+export function SearchFavoriteInput() {
   const router = useRouter();
   const [text, setText] = useState("");
   const [query] = useDebounce(text, 500);
 
   useEffect(() => {
     if (!query) {
-      router.push("/add-movie");
+      router.push("/");
     } else {
-      router.push(`/add-movie/?query=${encodeURI(query)}`);
+      router.push(`/?search=${encodeURI(query)}`);
     }
   }, [query, router.push]);
 
@@ -27,7 +27,7 @@ export function SearchMovieInput() {
         <Input
           onChange={(e) => setText(e.target.value)}
           type="search"
-          placeholder="Search by movie title"
+          placeholder="Filter favorite movies by title"
           autoFocus
         />
       </form>
