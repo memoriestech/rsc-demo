@@ -63,7 +63,7 @@ async function MovieList({
   const lastPage = Math.ceil(total / limit);
 
   if (total === 0 && !search) {
-    return <p className="text-muted-foreground">Add movies to get started.</p>;
+    return <p className="text-muted-foreground mt-2">Add movies to get started.</p>;
   }
 
   return (
