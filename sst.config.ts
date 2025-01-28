@@ -14,10 +14,15 @@ export default $config({
 
     const vpc = new sst.aws.Vpc("Vpc", { bastion: true, nat: "ec2" });
 
-    const rds = new sst.aws.Postgres("Postgres", { vpc, proxy: true });
+    const database = new sst.aws.Aurora("Postgres", {
+      vpc,
+      engine: "postgres",
+      proxy: true,
+      scaling: { max: "1 ACU", min: "0 ACU" },
+    });
 
     new sst.x.DevCommand("Studio", {
-      link: [rds],
+      link: [database],
       dev: {
         command: "npx drizzle-kit studio",
       },
@@ -28,14 +33,21 @@ export default $config({
     const auth = new sst.aws.Auth("Auth", {
       issuer: {
         handler: "auth/index.handler",
-        link: [email, rds],
+        link: [email, database],
         vpc,
       },
     });
 
-    new sst.aws.Nextjs("Web", {
-      link: [rds, auth, tmdbApiKey],
-      vpc,
+    const cluster = new sst.aws.Cluster("Cluster", { vpc });
+
+    cluster.addService("Web", {
+      loadBalancer: {
+        ports: [{ listen: "80/http", forward: "3000/http" }],
+      },
+      link: [database, auth, tmdbApiKey],
+      dev: {
+        command: "pnpm dev",
+      },
     });
   },
 });

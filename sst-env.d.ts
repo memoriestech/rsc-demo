@@ -5,35 +5,6 @@
 
 declare module "sst" {
   export interface Resource {
-    "Auth": {
-      "type": "sst.aws.Auth"
-      "url": string
-    }
-    "Email": {
-      "configSet": string
-      "sender": string
-      "type": "sst.aws.Email"
-    }
-    "Postgres": {
-      "database": string
-      "host": string
-      "password": string
-      "port": number
-      "type": "sst.aws.Postgres"
-      "username": string
-    }
-    "TMDB_API_KEY": {
-      "type": "sst.sst.Secret"
-      "value": string
-    }
-    "Vpc": {
-      "bastion": string
-      "type": "sst.aws.Vpc"
-    }
-    "Web": {
-      "type": "sst.aws.Nextjs"
-      "url": string
-    }
   }
 }
 /// <reference path="sst-env.d.ts" />
